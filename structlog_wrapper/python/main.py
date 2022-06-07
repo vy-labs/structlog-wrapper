@@ -1,6 +1,8 @@
 import logging
 import logging.config
 import socket
+from pathlib import Path, PurePath
+
 import sys
 
 import structlog
@@ -58,7 +60,8 @@ class EnvFilter(logging.Filter):
         return True
 
 
-def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_log_file=False, formatter=None):
+def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_log_file=False, formatter=None,
+                             file_path=None):
     if not structlog.is_configured():
         def _make_excepthook(old_excepthook):
             def log_unhandled_exception(excType, excValue, traceback):
@@ -87,8 +90,12 @@ def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_l
     ]
 
     handlers = ["console"]
+    log_file_path = "logs/{}.log".format(app_name)
     if enable_log_file:
         handlers.append("jsonFile")
+        if file_path:
+            Path(PurePath(file_path).parent).expanduser().mkdir(parents=True, exist_ok=True)
+            log_file_path = file_path
 
     if formatter is None:
         formatter = "json_formatter"
@@ -150,7 +157,7 @@ def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_l
             "jsonFile": {
                 "level": log_level,
                 "class": "logging.handlers.WatchedFileHandler",
-                "filename": "logs/{}.log".format(app_name),
+                "filename": log_file_path,
                 "formatter": "json_formatter",
                 "filters": [
                     "app",

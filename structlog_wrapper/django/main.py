@@ -5,6 +5,7 @@ import socket
 import structlog
 from structlog.processors import CallsiteParameter
 from structlog_sentry import SentryJsonProcessor
+from pathlib import Path, PurePath
 
 from .processors import inject_context_dict
 
@@ -59,7 +60,8 @@ class EnvFilter(logging.Filter):
         return True
 
 
-def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_log_file=False, formatter=None):
+def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_log_file=False, formatter=None,
+                             file_path=None):
     pre_chain = [
         inject_context_dict,
         structlog.stdlib.add_logger_name,
@@ -78,8 +80,12 @@ def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_l
     ]
 
     handlers = ["console"]
+    log_file_path = "logs/{}.log".format(app_name)
     if enable_log_file:
         handlers.append("jsonFile")
+        if file_path:
+            Path(PurePath(file_path).parent).expanduser().mkdir(parents=True, exist_ok=True)
+            log_file_path = file_path
 
     if formatter is None:
         formatter = "json_formatter"
@@ -141,7 +147,7 @@ def configure_struct_logging(app_name, app_type, env, log_level="INFO", enable_l
             "jsonFile": {
                 "level": log_level,
                 "class": "logging.handlers.WatchedFileHandler",
-                "filename": "logs/{}.log".format(app_name),
+                "filename": log_file_path,
                 "formatter": "json_formatter",
                 "filters": [
                     "app",
