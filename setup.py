@@ -10,7 +10,7 @@ setup(
     packages=find_namespace_packages(
         include=["structlog_wrapper", "structlog_wrapper.*"]
     ),
-    install_requires=["django>=1.11", "structlog>=21.5.0", "django-ipware>=4.0.2", "structlog_sentry>=1.4.0"],
+    install_requires=["django>=1.11", "structlog~=21.5.0", "django-ipware>=4.0.2", "structlog_sentry~=1.4.0"],
     include_package_data=True,
     license="MIT",
     classifiers=[
