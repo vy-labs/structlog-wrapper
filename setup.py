@@ -1,10 +1,22 @@
+import os
+
 from setuptools import setup, find_namespace_packages
 
-import structlog_wrapper
+
+def get_version():
+    basedir = os.path.dirname(__file__)
+    try:
+        with open(os.path.join(basedir, 'structlog_wrapper/version.py')) as f:
+            locals = {}
+            exec(f.read(), locals)
+            return locals['VERSION']
+    except FileNotFoundError:
+        raise RuntimeError('No version info found.')
+
 
 setup(
     name="structlog_wrapper",
-    version=structlog_wrapper.__version__,
+    version=get_version(),
     description="Structured Logging for Django & Python",
     url="https://github.com/ankitkr/structlog-wrapper",
     packages=find_namespace_packages(
