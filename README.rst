@@ -125,7 +125,7 @@ The function configure_struct_logging, can take the following extra parameters:
 3) appType (string)
     This param can take one of the following values.
       a) web
-      b) data-manager
+      b) manager
       c) RqWorker
       d) RqWorkerScheduler
       e) RqWorkerDashboard
