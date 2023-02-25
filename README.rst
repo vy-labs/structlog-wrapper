@@ -133,6 +133,9 @@ The function configure_struct_logging, can take the following extra parameters:
       g) CeleryWorkerScheduler
       h) CeleryWorkerDashboard
       i) addon
+      j) nginx
+      k) Sidekiq
+      l) SidekiqDashboard
 
 4) appEnvironment (string)
     This can take one of the values listed below.
